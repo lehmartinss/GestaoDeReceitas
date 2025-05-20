@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GestaoDeReceitas</string>
+    <string name= "logo_description">Logo description</string>
+    <string name= "login">Login</string>
+    <string name= "usuario_email">Digite seu usuário ou e-mail</string>
+    <string name= "senha">Senha</string>
+    <string name= "esqueceu_senha">Esqueceu a senha?</string>
+    <string name= "entrar">Entrar</string>
+    <string name= "nao_conta">Não tem conta?</string>
+    <string name= "fazer_cadastro">Fazer cadastro</string>
+    <string name= "support_nameUser"> Nome de usuário ou E-mail é obrigatório</string>
+</resources>
