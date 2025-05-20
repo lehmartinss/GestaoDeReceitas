@@ -40,11 +40,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.gestaodereceitas.R
 
 
 @Composable
-fun TelaLogin(navController: NavController?){
+fun TelaLogin(navController: NavController){
 
     var nomeState = remember {
         mutableStateOf(value = "")
@@ -217,5 +219,5 @@ fun TelaLogin(navController: NavController?){
 @Preview(showSystemUi = true)
 @Composable
 private fun TelaLoginPreview() {
-    TelaLogin(null)
+    TelaLogin(rememberNavController())
 }
