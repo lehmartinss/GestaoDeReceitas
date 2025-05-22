@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -29,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -46,7 +48,7 @@ import br.senai.sp.jandira.gestaodereceitas.R
 
 
 @Composable
-fun TelaLogin(navController: NavController){
+fun TelaLogin(navController: NavController?){
 
     var nomeState = remember {
         mutableStateOf(value = "")
@@ -170,7 +172,7 @@ fun TelaLogin(navController: NavController){
                     .padding(15.dp),
                 text = stringResource(R.string.esqueceu_senha),
                 color = Color(0xFF982829),
-                fontSize = 14.sp
+                fontSize = 15.sp
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -193,7 +195,9 @@ fun TelaLogin(navController: NavController){
         },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF325862)
-            )
+            ),
+            modifier = Modifier
+                .width(130.dp)
         ) {
             Text(
                 text = stringResource((R.string.entrar)),
@@ -205,12 +209,12 @@ fun TelaLogin(navController: NavController){
                 .padding(10.dp),
             text = stringResource((R.string.nao_conta)),
             color = Color(0xFF982829),
-            fontSize = 16.sp
+            fontSize = 17.sp
         )
         Text(
             text = stringResource((R.string.fazer_cadastro)),
             color = Color(0xFF982829),
-            fontSize = 13.sp,
+            fontSize = 14.sp,
         )
     }
 }
@@ -219,5 +223,5 @@ fun TelaLogin(navController: NavController){
 @Preview(showSystemUi = true)
 @Composable
 private fun TelaLoginPreview() {
-    TelaLogin(rememberNavController())
+    TelaLogin(null)
 }

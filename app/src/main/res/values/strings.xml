@@ -9,4 +9,17 @@
     <string name= "nao_conta">Não tem conta?</string>
     <string name= "fazer_cadastro">Fazer cadastro</string>
     <string name= "support_nameUser"> Nome de usuário ou E-mail é obrigatório</string>
+    <string name= "cadastro">CADASTRE-SE</string>
+    <string name= "nome_usuario_cadastro">Nome de usuário</string>
+    <string name= "email_cadastro">Email</string>
+    <string name= "telefone_cadastro">Telefone</string>
+    <string name= "criar_senha_cadastro">Crie uma senha</string>
+    <string name= "confirmar_senha_cadastro">Confirme a senha</string>
+    <string name= "criar_conta">Criar conta</string>
+    <string name= "ja_conta">Ja tem uma conta?</string>
+    <string name= "fazer_login">Fazer Login</string>
+    <string name= "palavra_chave">Palavra-chave</string>
+    <string name= "recuperacao_senha">Recuperação de Senha</string>
+
+
 </resources>
