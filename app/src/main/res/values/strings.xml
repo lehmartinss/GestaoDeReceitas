@@ -12,7 +12,7 @@
     <string name= "cadastro">CADASTRE-SE</string>
     <string name= "nome_usuario_cadastro">Nome de usuário</string>
     <string name= "email_cadastro">Email</string>
-    <string name= "telefone_cadastro">Telefone</string>
+    <string name= "palavraChave_cadastro">Crie uma Palavra-Chave</string>
     <string name= "criar_senha_cadastro">Crie uma senha</string>
     <string name= "confirmar_senha_cadastro">Confirme a senha</string>
     <string name= "criar_conta">Criar conta</string>

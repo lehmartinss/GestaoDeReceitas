@@ -87,7 +87,7 @@ fun TelaLogin(navController: NavController?){
             fontSize = 18.sp,
             modifier = Modifier
                 .align(Alignment.Start)
-                .padding(top = 16.dp)
+                .padding(top = 15.dp)
         )
         OutlinedTextField(
 //            value = nomeState.value,
@@ -133,7 +133,7 @@ fun TelaLogin(navController: NavController?){
             fontSize = 18.sp,
             modifier = Modifier
                 .align(Alignment.Start)
-                .padding(top = 16.dp)
+                .padding(top = 10.dp)
         )
         OutlinedTextField(
             value = "",
@@ -206,6 +206,7 @@ fun TelaLogin(navController: NavController?){
             ),
             modifier = Modifier
                 .width(130.dp)
+
         ) {
             Text(
                 text = stringResource((R.string.entrar)),
@@ -214,7 +215,7 @@ fun TelaLogin(navController: NavController?){
         }
         Text(
             modifier = Modifier
-                .padding(10.dp),
+                .padding(8.dp),
             text = stringResource((R.string.nao_conta)),
             color = Color(0xFF982829),
             fontSize = 17.sp

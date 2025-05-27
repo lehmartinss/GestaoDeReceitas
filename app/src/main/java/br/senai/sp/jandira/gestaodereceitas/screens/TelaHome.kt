@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
@@ -37,7 +37,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.gestaodereceitas.R
+import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
+import br.senai.sp.jandira.gestaodereceitas.service.CadastroService
+import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @Composable
@@ -46,6 +52,7 @@ fun TelaHome(navController: NavController?){
     var nome_usuario = remember { mutableStateOf("") }
     var email = remember { mutableStateOf("") }
     var senha = remember { mutableStateOf("") }
+    var confirmarSenha = remember { mutableStateOf("") }
     var palavra_chave = remember { mutableStateOf("") }
 
 
@@ -92,7 +99,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(50.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -131,7 +138,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(50.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -162,12 +169,14 @@ fun TelaHome(navController: NavController?){
                         .padding(top = 16.dp)
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = senha.value ,
+                    onValueChange = { it ->
+                        senha.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(50.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -199,12 +208,14 @@ fun TelaHome(navController: NavController?){
                         .padding(top = 16.dp)
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = confirmarSenha.value ,
+                    onValueChange = { it ->
+                        confirmarSenha.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 6.dp)
-                        .height(50.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -229,28 +240,31 @@ fun TelaHome(navController: NavController?){
                     )
                 )
                 Text(
-                    text = stringResource(R.string.telefone_cadastro),
+                    text = stringResource(R.string.palavraChave_cadastro),
                     fontSize = 18.sp,
                     modifier = Modifier
                         .align(Alignment.Start)
                         .padding(top = 16.dp)
                 )
                 OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = palavra_chave.value ,
+                    onValueChange = { it ->
+                        palavra_chave.value = it
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(50.dp),
+                        .height(45.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
-                            imageVector = Icons.Default.Call,
+                            imageVector = Icons.Default.Create,
                             contentDescription = "",
                             tint = Color(0xFFECE1C4))
                     } ,
                     keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.Sentences
                     ),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color(0xFF325862),
@@ -270,7 +284,38 @@ fun TelaHome(navController: NavController?){
                         .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
-                    Button(onClick = {},
+                    Button(
+                        onClick = {
+                            val cadastro = Cadastro(
+                            nome_usuario = nome_usuario.value,
+                            email = email.value,
+                            senha = senha.value,
+                            palavra_chave = palavra_chave.value
+                        )
+
+                        // Fazer uma chamada para API
+                        val call = RetrofitFactory()
+                            .getCadastroService()
+                            .insert(cadastro)
+
+                            call.enqueue(object : Callback<Cadastro> {
+                            override fun onResponse(p0: retrofit2.Call<Cadastro>, response: Response<Cadastro>
+                            ) {
+                                if (response.isSuccessful) {
+                                    android.util.Log.i(
+                                        "API",
+                                        "Usuário cadastrado com sucesso: ${response.body()}"
+                                    )
+                                } else {
+                                    android.util.Log.e("API", "Erro ao cadastrar: ${response.code()}")
+                                }
+                            }
+
+                            override fun onFailure(call: retrofit2.Call<Cadastro>, t: Throwable) {
+                                android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                            }
+                        })
+                    },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF325862)
                         ),
