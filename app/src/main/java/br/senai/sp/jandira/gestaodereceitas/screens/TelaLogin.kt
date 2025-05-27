@@ -24,6 +24,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -89,10 +90,12 @@ fun TelaLogin(navController: NavController?){
                 .padding(top = 16.dp)
         )
         OutlinedTextField(
-            value = nomeState.value,
-            onValueChange = {it ->
-                nomeState.value = it
-            },
+//            value = nomeState.value,
+//            onValueChange = {it ->
+//                nomeState.value = it
+//            },
+            value = "",
+            onValueChange = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp),
@@ -104,8 +107,7 @@ fun TelaLogin(navController: NavController?){
                     tint = Color(0xFFECE1C4))
             } ,
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                capitalization = KeyboardCapitalization.Sentences
+                keyboardType = KeyboardType.Email
             ),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color(0xFF325862),
@@ -167,13 +169,19 @@ fun TelaLogin(navController: NavController?){
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            Text(
-                modifier = Modifier
-                    .padding(15.dp),
-                text = stringResource(R.string.esqueceu_senha),
-                color = Color(0xFF982829),
-                fontSize = 15.sp
-            )
+            TextButton(
+                onClick = {
+                    navController?.navigate("RecuperarSenha")
+                },
+                modifier = Modifier.padding(15.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.esqueceu_senha),
+                    color = Color(0xFF982829),
+                    fontSize = 15.sp
+                )
+            }
+
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
@@ -211,11 +219,16 @@ fun TelaLogin(navController: NavController?){
             color = Color(0xFF982829),
             fontSize = 17.sp
         )
-        Text(
-            text = stringResource((R.string.fazer_cadastro)),
-            color = Color(0xFF982829),
-            fontSize = 14.sp,
-        )
+        TextButton(onClick = {
+            navController?.navigate("home")
+        }) {
+            Text(
+                text = stringResource(R.string.fazer_cadastro),
+                color = Color(0xFF982829),
+                fontSize = 14.sp
+            )
+        }
+
     }
 }
 

@@ -34,11 +34,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import br.senai.sp.jandira.gestaodereceitas.R
 
 
 @Composable
-    fun TelaRecuperacaoSenha(){
+    fun TelaRecuperacaoSenha(navController: NavController?){
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -59,7 +60,7 @@ import br.senai.sp.jandira.gestaodereceitas.R
                     fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
-                        .padding(top = 6.dp, bottom = 12.dp),
+                        .padding(top = 15.dp, bottom = 12.dp),
                     color = Color(0xFF325862)
 
                 )
@@ -73,7 +74,7 @@ import br.senai.sp.jandira.gestaodereceitas.R
                         fontSize = 18.sp,
                         modifier = Modifier
                             .align(Alignment.Start)
-                            .padding(top = 16.dp)
+                            .padding(top = 100.dp)
                     )
                     OutlinedTextField(
                         value = "",
@@ -90,8 +91,7 @@ import br.senai.sp.jandira.gestaodereceitas.R
                             )
                         } ,
                         keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            capitalization = KeyboardCapitalization.Sentences
+                            keyboardType = KeyboardType.Email
                         ),
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color(0xFF325862),
@@ -142,50 +142,16 @@ import br.senai.sp.jandira.gestaodereceitas.R
                             cursorColor = Color.White
                         )
                     )
-                    Text(
-                        text = stringResource(R.string.telefone_cadastro),
-                        fontSize = 18.sp,
-                        modifier = Modifier
-                            .align(Alignment.Start)
-                            .padding(top = 16.dp)
-                    )
-                    OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 5.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        leadingIcon =   {
-                            Icon(
-                                imageVector = Icons.Default.Call,
-                                contentDescription = "",
-                                tint = Color(0xFFECE1C4)
-                            )
-                        } ,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            capitalization = KeyboardCapitalization.Sentences
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFF325862),
-                            unfocusedContainerColor = Color(0xFF325862),
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedLeadingIconColor = Color.White,
-                            unfocusedLeadingIconColor = Color.White,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            cursorColor = Color.White
-                        )
-                    )
                     //colum dos botoes
                     Column(
                         modifier = Modifier
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ){
-                        Button(onClick = {},
+                        Button(
+                            onClick = {
+                                navController?.navigate("login")
+                            },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color(0xFF325862)
                             ),
@@ -214,5 +180,5 @@ import br.senai.sp.jandira.gestaodereceitas.R
 @Preview(showSystemUi = true)
 @Composable
 private fun TelaRecuperacaoSenhaPreview() {
-    TelaRecuperacaoSenha()
+    TelaRecuperacaoSenha(null)
 }
