@@ -2,7 +2,7 @@
     <string name="app_name">GestaoDeReceitas</string>
     <string name= "logo_description">Logo description</string>
     <string name= "login">Login</string>
-    <string name= "usuario_email">Digite seu usuário ou e-mail</string>
+    <string name= "digite_email">Digite seu e-mail</string>
     <string name= "senha">Senha</string>
     <string name= "esqueceu_senha">Esqueceu a senha?</string>
     <string name= "entrar">Entrar</string>

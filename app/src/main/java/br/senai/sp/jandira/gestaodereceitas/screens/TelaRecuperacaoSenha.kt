@@ -70,7 +70,7 @@ import br.senai.sp.jandira.gestaodereceitas.R
                         .fillMaxSize()
                 ) {
                     Text(
-                        text = stringResource(R.string.usuario_email),
+                        text = stringResource(R.string.digite_email),
                         fontSize = 18.sp,
                         modifier = Modifier
                             .align(Alignment.Start)

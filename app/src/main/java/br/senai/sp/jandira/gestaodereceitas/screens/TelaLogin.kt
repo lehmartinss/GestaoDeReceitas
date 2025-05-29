@@ -83,7 +83,7 @@ fun TelaLogin(navController: NavController?){
         )
         Spacer(modifier = Modifier.height(40.dp))
         Text(
-            text = stringResource(R.string.usuario_email),
+            text = stringResource(R.string.digite_email),
             fontSize = 18.sp,
             modifier = Modifier
                 .align(Alignment.Start)

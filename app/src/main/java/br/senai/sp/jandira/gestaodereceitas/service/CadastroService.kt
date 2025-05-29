@@ -11,4 +11,7 @@ interface CadastroService {
         @Headers("Content-Type: application/json")
         @POST("usuario")
         fun insert(@Body cadastro: Cadastro): Call<Cadastro>
+
+        @POST("login")
+        fun insert(@Body cadastro: Cadastro): Call<Cadastro>
 }
