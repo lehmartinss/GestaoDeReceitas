@@ -393,7 +393,6 @@ fun TelaHome(navController: NavController?){
                 }
             }
         )
-
     }
 }
 

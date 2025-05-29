@@ -14,5 +14,5 @@ interface CadastroService {
         fun insert(@Body cadastro: Cadastro): Call<Cadastro>
 
         @POST("login")
-        fun login(@Body login: Login): Call<Login>
+        fun insert(@Body login: Login): Call<Login>
 }

@@ -23,12 +23,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusModifier
@@ -46,24 +48,22 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.gestaodereceitas.R
+import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
+import br.senai.sp.jandira.gestaodereceitas.model.Login
+import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import kotlinx.coroutines.launch
+import retrofit2.Callback
+import retrofit2.Response
 
 
 @Composable
 fun TelaLogin(navController: NavController?){
 
-    var nomeState = remember {
-        mutableStateOf(value = "")
-    }
+    val email = remember { mutableStateOf("") }
+    val senha = remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    var isErrorState = remember {
-        mutableStateOf(false)
-    }
-
-    var errorMessageState = remember {
-        mutableStateOf("")
-    }
-
-    var context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -90,12 +90,10 @@ fun TelaLogin(navController: NavController?){
                 .padding(top = 15.dp)
         )
         OutlinedTextField(
-//            value = nomeState.value,
-//            onValueChange = {it ->
-//                nomeState.value = it
-//            },
-            value = "",
-            onValueChange = {},
+            value = email.value ,
+            onValueChange = { it ->
+                email.value = it
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp),
@@ -120,13 +118,6 @@ fun TelaLogin(navController: NavController?){
                 unfocusedIndicatorColor = Color.Transparent,
                 cursorColor = Color.White
             ),
-            isError =  isErrorState.value,
-            supportingText = {
-                Text(
-                    text = errorMessageState.value,
-                    color = Color.Red
-                )
-            }
         )
         Text(
             text = stringResource(R.string.senha),
@@ -136,8 +127,10 @@ fun TelaLogin(navController: NavController?){
                 .padding(top = 10.dp)
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = senha.value ,
+            onValueChange = { it ->
+                senha.value = it
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 10.dp),
@@ -184,22 +177,47 @@ fun TelaLogin(navController: NavController?){
 
         }
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            if (nomeState.value.length < 3){
-                isErrorState.value = true
-                errorMessageState.value = context.getString(R.string.support_nameUser)
-            }else {
-                // Criar o acesso a uma arquivo SharedPreferences
-                val sharedNome = context
-                    .getSharedPreferences("usuario", Context.MODE_PRIVATE)
+        Button(
+            onClick = {
+                val login = Login(
+                    email = email.value,
+                    senha = senha.value
+                )
 
-                // Criar uma vareavel para editar o arquivo que acabamos de criar ou abrir
-                val editor = sharedNome.edit()
-                editor.putString("user_name", nomeState.value.trim())
-                editor.apply()
+                // Fazer uma chamada para API
+                val call = RetrofitFactory()
+                    .getCadastroService()
+                    .insert(login)
+
+                call.enqueue(object : Callback<Login> {
+                    override fun onResponse(
+                        p0: retrofit2.Call<Login>, response: Response<Login>
+                    ) {
+                        if (response.isSuccessful) {
+                            android.util.Log.i(
+                                "API",
+                                "Login realizado com sucesso: ${response.body()}"
+                            )
+                        } else {
+                            scope.launch {
+                                snackbarHostState.showSnackbar("Erro ao acessar login: ${response.code()}")
+                            }
+                            android.util.Log.e(
+                                "API",
+                                "Erro ao acessar login: ${response.code()}"
+                            )
+                        }
+                    }
+                    override fun onFailure(
+                        call: retrofit2.Call<Login>,
+                        t: Throwable
+                    ) {
+                        android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                    }
+                })
 
                 navController?.navigate("home")
-            }
+
         },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF325862)
