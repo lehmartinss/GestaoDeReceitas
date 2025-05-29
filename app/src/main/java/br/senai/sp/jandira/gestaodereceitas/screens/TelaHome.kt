@@ -19,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -107,7 +108,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(48.dp),
+                        .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -146,7 +147,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(48.dp),
+                        .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -184,7 +185,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(48.dp),
+                        .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -223,7 +224,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 6.dp)
-                        .height(48.dp),
+                        .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -262,7 +263,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(48.dp),
+                        .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -371,20 +372,28 @@ fun TelaHome(navController: NavController?){
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .align(Alignment.Center) // Centraliza no meio da tela
+                .align(Alignment.Center)
                 .padding(16.dp),
             snackbar = { data ->
                 Snackbar(
-                    containerColor = Color(0xFF325862),
-                    contentColor = Color.White,
+                    containerColor = Color(0xFFFFC56C),
+                    contentColor = Color.Black,
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .height(70.dp)
                 ) {
-                    Text(text = data.visuals.message)
+                    Text(
+                        text = data.visuals.message,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp
+                    )
                 }
             }
         )
+
     }
 }
 
