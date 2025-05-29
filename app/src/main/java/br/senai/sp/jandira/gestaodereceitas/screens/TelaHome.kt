@@ -19,12 +19,16 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +37,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,6 +47,8 @@ import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
 import br.senai.sp.jandira.gestaodereceitas.service.CadastroService
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -49,12 +56,13 @@ import retrofit2.Response
 @Composable
 fun TelaHome(navController: NavController?){
 
-    var nome_usuario = remember { mutableStateOf("") }
-    var email = remember { mutableStateOf("") }
-    var senha = remember { mutableStateOf("") }
-    var confirmarSenha = remember { mutableStateOf("") }
-    var palavra_chave = remember { mutableStateOf("") }
-
+    val nome_usuario = remember { mutableStateOf("") }
+    val email = remember { mutableStateOf("") }
+    val senha = remember { mutableStateOf("") }
+    val confirmarSenha = remember { mutableStateOf("") }
+    val palavra_chave = remember { mutableStateOf("") }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Box(
         modifier = Modifier
@@ -99,7 +107,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(45.dp),
+                        .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -138,7 +146,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(45.dp),
+                        .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -176,7 +184,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(45.dp),
+                        .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -215,7 +223,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 6.dp)
-                        .height(45.dp),
+                        .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -254,7 +262,7 @@ fun TelaHome(navController: NavController?){
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 5.dp)
-                        .height(45.dp),
+                        .height(48.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
                         Icon(
@@ -299,28 +307,40 @@ fun TelaHome(navController: NavController?){
                             .insert(cadastro)
 
                             call.enqueue(object : Callback<Cadastro> {
-                            override fun onResponse(p0: retrofit2.Call<Cadastro>, response: Response<Cadastro>
-                            ) {
-                                if (response.isSuccessful) {
-                                    android.util.Log.i(
-                                        "API",
-                                        "Usuário cadastrado com sucesso: ${response.body()}"
-                                    )
-                                } else {
-                                    android.util.Log.e("API", "Erro ao cadastrar: ${response.code()}")
+                                override fun onResponse(
+                                    p0: retrofit2.Call<Cadastro>, response: Response<Cadastro>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Usuário cadastrado com sucesso")
+                                        }
+                                        android.util.Log.i(
+                                            "API",
+                                            "Usuário cadastrado com sucesso: ${response.body()}"
+                                        )
+                                    } else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Erro ao cadastrar: ${response.code()}")
+                                        }
+                                        android.util.Log.e(
+                                            "API",
+                                            "Erro ao cadastrar: ${response.code()}"
+                                        )
+                                    }
                                 }
-                            }
-
-                            override fun onFailure(call: retrofit2.Call<Cadastro>, t: Throwable) {
-                                android.util.Log.e("API", "Falha na requisição: ${t.message}")
-                            }
-                        })
+                                override fun onFailure(
+                                    call: retrofit2.Call<Cadastro>,
+                                    t: Throwable
+                                ) {
+                                    android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                                }
+                            })
                     },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF325862)
                         ),
                         modifier = Modifier
-                            .padding(top = 14.dp, bottom = 4.dp)
+                            .padding(top = 14.dp, bottom = 1.dp)
                     ) {
                         Text(
                             text = stringResource((R.string.criar_conta)),
@@ -329,7 +349,7 @@ fun TelaHome(navController: NavController?){
                     }
                     Text(
                         modifier = Modifier
-                            .padding(4.dp),
+                            .padding(3.dp),
                         text = stringResource(R.string.ja_conta),
                         color = Color(0xFF982829),
                         fontSize = 18.sp
@@ -345,15 +365,26 @@ fun TelaHome(navController: NavController?){
                             fontSize = 16.sp
                         )
                     }
-
                 }
             }
-
-
         }
-
-
-
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.Center) // Centraliza no meio da tela
+                .padding(16.dp),
+            snackbar = { data ->
+                Snackbar(
+                    containerColor = Color(0xFF325862),
+                    contentColor = Color.White,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .padding(8.dp)
+                ) {
+                    Text(text = data.visuals.message)
+                }
+            }
+        )
     }
 }
 
