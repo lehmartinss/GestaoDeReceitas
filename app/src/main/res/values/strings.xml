@@ -20,6 +20,7 @@
     <string name= "fazer_login">Fazer Login</string>
     <string name= "palavra_chave">Palavra-chave</string>
     <string name= "recuperacao_senha">Recuperação de Senha</string>
+    <string name= "nova_senha">Nova Senha</string>
 
 
 </resources>

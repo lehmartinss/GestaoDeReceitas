@@ -23,6 +23,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -42,6 +44,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +54,9 @@ import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
 import br.senai.sp.jandira.gestaodereceitas.model.Login
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
@@ -179,45 +184,38 @@ fun TelaLogin(navController: NavController?){
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
+
                 val login = Login(
                     email = email.value,
                     senha = senha.value
                 )
 
-                // Fazer uma chamada para API
                 val call = RetrofitFactory()
                     .getCadastroService()
-                    .insert(login)
+                    .inserir(login)
 
                 call.enqueue(object : Callback<Login> {
-                    override fun onResponse(
-                        p0: retrofit2.Call<Login>, response: Response<Login>
-                    ) {
+                    override fun onResponse(call: Call<Login>, response: Response<Login>) {
                         if (response.isSuccessful) {
-                            android.util.Log.i(
-                                "API",
-                                "Login realizado com sucesso: ${response.body()}"
-                            )
+
+                            android.util.Log.i("API", "Login realizado com sucesso!!: ${response.body()}")
+
+                            navController?.navigate("home")
+
                         } else {
                             scope.launch {
                                 snackbarHostState.showSnackbar("Erro ao acessar login: ${response.code()}")
                             }
-                            android.util.Log.e(
-                                "API",
-                                "Erro ao acessar login: ${response.code()}"
-                            )
+                            android.util.Log.e("API", "Erro ao acessar login: ${response.code()}")
                         }
                     }
-                    override fun onFailure(
-                        call: retrofit2.Call<Login>,
-                        t: Throwable
-                    ) {
+                    override fun onFailure(call: Call<Login>, t: Throwable) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("Erro de conexão: ${t.message}")
+                        }
                         android.util.Log.e("API", "Falha na requisição: ${t.message}")
                     }
                 })
-
-                navController?.navigate("home")
-
         },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF325862)
@@ -247,6 +245,30 @@ fun TelaLogin(navController: NavController?){
                 fontSize = 14.sp
             )
         }
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.Center as Alignment.Horizontal)
+                .padding(16.dp),
+            snackbar = { data ->
+                Snackbar(
+                    containerColor = Color(0xFFFFC56C),
+                    contentColor = Color.Black,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier
+                        .padding(10.dp)
+                        .fillMaxWidth()
+                        .height(70.dp)
+                ) {
+                    Text(
+                        text = data.visuals.message,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        fontSize = 18.sp
+                    )
+                }
+            }
+        )
 
     }
 }
