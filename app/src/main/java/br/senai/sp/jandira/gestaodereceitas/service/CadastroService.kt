@@ -1,6 +1,7 @@
 package br.senai.sp.jandira.gestaodereceitas.service
 
 import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
+import br.senai.sp.jandira.gestaodereceitas.model.Login
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -13,5 +14,5 @@ interface CadastroService {
         fun insert(@Body cadastro: Cadastro): Call<Cadastro>
 
         @POST("login")
-        fun insert(@Body cadastro: Cadastro): Call<Cadastro>
+        fun login(@Body login: Login): Call<Login>
 }
