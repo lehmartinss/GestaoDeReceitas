@@ -248,7 +248,6 @@ fun TelaLogin(navController: NavController?){
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
-                .align(Alignment.Center as Alignment.Horizontal)
                 .padding(16.dp),
             snackbar = { data ->
                 Snackbar(
