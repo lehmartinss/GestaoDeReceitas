@@ -2,6 +2,7 @@ package br.senai.sp.jandira.gestaodereceitas.service
 
 import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
 import br.senai.sp.jandira.gestaodereceitas.model.Login
+import br.senai.sp.jandira.gestaodereceitas.model.Receita
 import br.senai.sp.jandira.gestaodereceitas.model.RecuperarSenha
 import retrofit2.Call
 import retrofit2.http.Body
@@ -23,6 +24,9 @@ interface CadastroService {
         @PUT("usuario")
         fun update(@Body recuperarSenha: RecuperarSenha): Call<RecuperarSenha>
 
+        @Headers("Content-Type: application/json")
+        @PUT("receita")
+        fun publicar(@Body receita: Receita): Call<Receita>
 
 
 }

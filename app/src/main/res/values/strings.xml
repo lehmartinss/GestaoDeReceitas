@@ -21,6 +21,16 @@
     <string name= "palavra_chave">Palavra-chave</string>
     <string name= "recuperacao_senha">Recuperação de Senha</string>
     <string name= "nova_senha">Nova Senha</string>
+    <string name= "publicar_receita">Publique sua receita!</string>
+    <string name= "nome_receita">Nome</string>
+    <string name= "ingredientes">Ingredientes</string>
+    <string name= "modo_preparo">Modo de Preparo</string>
+    <string name= "Categoria">Categoria</string>
+    <string name= "nivel_dificuldade">Nivel de dificuldade</string>
+    <string name= "tempo_preparo">Tempo de preparo</string>
+    <string name= "publicar_receita_botao">Publicar</string>
+    <string name= "foto">Foto</string>
+    <string name= "selecionar_foto">Selecionar foto da receita</string>
 
 
 </resources>
