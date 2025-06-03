@@ -1,6 +1,8 @@
 package br.senai.sp.jandira.gestaodereceitas.screens
 
+import android.graphics.drawable.Icon
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -8,6 +10,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +23,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -31,6 +40,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,15 +63,18 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TelaReceita(navController: NavController?){
 
-    val nome_receita = remember { mutableStateOf("") }
-    val ingredientes = remember { mutableStateOf("") }
+    val titulo = remember { mutableStateOf("") }
+    val ingrediente = remember { mutableStateOf("") }
     val modo_preparo = remember { mutableStateOf("") }
-    val categoria = remember { mutableStateOf("") }
-    val nivel_dificudade = remember { mutableStateOf("") }
+    val dificuldade = remember { mutableStateOf("") }
     val tempo_preparo = remember { mutableStateOf("") }
+    val categoria = remember { mutableStateOf("") }
+    val expanded = remember { mutableStateOf(false) }
+    val categorias = listOf("Salgado", "Doce", "Carne", "Ave", "Peixe", "Sem Glúten", "Sem Lactose",)
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -121,29 +134,33 @@ fun TelaReceita(navController: NavController?){
                     modifier = Modifier.padding(top = 6.dp)
                 )
 
-                Button(
-                    onClick = {
-                        launcher.launch("image/*")
-                    },
-                    colors = ButtonDefaults.buttonColors
-                        (containerColor = Color(0xFF325862)),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.padding(top = 8.dp)
-                ) {
-                    Text(text = stringResource(R.string.selecionar_foto),
-                        color = Color.White
-                    )
+                if (imageUri.value == null) {
+                    Button(
+                        onClick = {
+                            launcher.launch("image/*")
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF325862)
+                        ),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.selecionar_foto),
+                            color = Color.White
+                        )
+                    }
                 }
-
                 imageUri.value?.let { uri ->
                     Image(
                         painter = rememberAsyncImagePainter(model = uri),
                         contentDescription = null,
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .height(150.dp)
-                            .fillMaxWidth(),
-                        contentScale = ContentScale.Crop
+                            .height(95.dp) // altura reduzida
+                            .width(180.dp) // largura reduzida (ajuste como quiser)
+                            .clip(RoundedCornerShape(25.dp)),// cantos arredondados
+                        contentScale = ContentScale.Fit // mostra a imagem inteira sem cortar
                     )
                 }
                 Text(
@@ -154,9 +171,9 @@ fun TelaReceita(navController: NavController?){
                         .padding(top = 5.dp)
                 )
                 OutlinedTextField(
-                    value = nome_receita.value ,
+                    value = titulo.value ,
                     onValueChange = { it ->
-                        nome_receita.value = it
+                        titulo.value = it
                     },
                     modifier = Modifier
                         .width(300.dp)
@@ -188,9 +205,9 @@ fun TelaReceita(navController: NavController?){
                         .padding(top = 16.dp)
                 )
                 OutlinedTextField(
-                    value = ingredientes.value ,
+                    value = ingrediente.value ,
                     onValueChange = { it ->
-                        ingredientes.value = it
+                        ingrediente.value = it
                     },
                     modifier = Modifier
                         .width(300.dp)
@@ -255,33 +272,78 @@ fun TelaReceita(navController: NavController?){
                         .align(Alignment.Start)
                         .padding(top = 16.dp)
                 )
-                OutlinedTextField(
-                    value = categoria.value ,
-                    onValueChange = { it ->
-                        categoria.value = it
-                    },
+
+                ExposedDropdownMenuBox(
+                    expanded = expanded.value,
+                    onExpandedChange = { expanded.value = !expanded.value },
                     modifier = Modifier
                         .width(200.dp)
                         .padding(top = 5.dp)
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Sentences
-                    ),
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color(0xFF325862),
-                        unfocusedContainerColor = Color(0xFF325862),
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White,
-                        focusedLeadingIconColor = Color.White,
-                        unfocusedLeadingIconColor = Color.White,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        cursorColor = Color.White
+                ) {
+                    OutlinedTextField(
+                        value = categoria.value,
+                        onValueChange = { it ->
+                            categoria.value = it
+                        },
+                        readOnly = true,
+                        placeholder = {
+                            Text(
+                                text = stringResource(R.string.selecione),
+                                color = Color.White,
+                                fontSize = 14.sp
+                            )
+                        },
+                        trailingIcon = {
+                            Icon(
+                                imageVector = Icons.,
+
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+
+                        },
+                        modifier = Modifier
+                            .menuAnchor()
+                            .height(55.dp)
+                            .width(180.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        textStyle = LocalTextStyle.current.copy(
+                            fontSize = 14.sp
+                        ),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color(0xFF325862),
+                            unfocusedContainerColor = Color(0xFF325862),
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            cursorColor = Color.White
+                        )
                     )
-                )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false },
+                        modifier = Modifier
+                            .background(Color(0xFF982829))
+                    ) {
+                        categorias.forEach { item ->
+                            DropdownMenuItem(
+                                text = {
+                                    Text(
+                                        text = item,
+                                        color = Color.White
+                                    )
+                                },
+                                onClick = {
+                                    categoria.value = item
+                                    expanded.value = false
+                                },
+                                modifier = Modifier.background(Color(0xFF982829))
+                            )
+                        }
+                    }
+                }
                 Text(
                     text = stringResource(R.string.nivel_dificuldade),
                     fontSize = 18.sp,
@@ -290,9 +352,9 @@ fun TelaReceita(navController: NavController?){
                         .padding(top = 16.dp)
                 )
                 OutlinedTextField(
-                    value = nivel_dificudade.value ,
+                    value = dificuldade.value ,
                     onValueChange = { it ->
-                        nivel_dificudade.value = it
+                        dificuldade.value = it
                     },
                     modifier = Modifier
                         .width(200.dp)
@@ -351,23 +413,22 @@ fun TelaReceita(navController: NavController?){
                     )
                 )
 
-                //colum dos botoes
-                Column(
+                //box dos botoes
+                Box(
                     modifier = Modifier
-                        .width(100.dp)
-                        .height(100.dp),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.End,
+                        .fillMaxSize()
+                        .padding(end = 16.dp, bottom = 4.dp),
+                    contentAlignment = Alignment.BottomEnd
                 ){
                     Button(
                         onClick = {
                             val receita = Receita(
-                                nome_receita = nome_receita.value,
-                                ingredientes = ingredientes.value,
+                                titulo = titulo.value,
+                                ingrediente = ingrediente.value,
                                 modo_preparo = modo_preparo.value,
-                                categoria = categoria.value,
-                                nivel_dificudade = nivel_dificudade.value,
+                                dificuldade = dificuldade.value,
                                 tempo_preparo = tempo_preparo.value,
+                                categoria = categoria.value,
                             )
 
                             // Fazer uma chamada para API
@@ -377,13 +438,13 @@ fun TelaReceita(navController: NavController?){
 
                             call.enqueue(object : Callback<Receita> {
                                 override fun onResponse(
-                                    p0: retrofit2.Call<Receita>, response: Response<Receita>
+                                    p0: Call<Receita>, response: Response<Receita>
                                 ) {
                                     if (response.isSuccessful) {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Receita publicada com sucesso")
                                         }
-                                        android.util.Log.i(
+                                        Log.i(
                                             "API",
                                             "Receita publicada com sucesso: ${response.body()}"
                                         )
@@ -394,14 +455,14 @@ fun TelaReceita(navController: NavController?){
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Erro ao publicar receita: existe campos que não foram preenchidos")
                                         }
-                                        android.util.Log.e(
+                                        Log.e(
                                             "API",
                                             "Erro ao publicar receita: ${response.code()}"
                                         )
                                     }
                                 }
                                 override fun onFailure(p0: Call<Receita>, t: Throwable) {
-                                    android.util.Log.e(
+                                    Log.e(
                                         "API",
                                         "Falha na requisição: ${t.message}")
                                 }

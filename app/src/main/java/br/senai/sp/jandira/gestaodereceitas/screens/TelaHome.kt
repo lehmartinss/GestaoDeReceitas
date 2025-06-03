@@ -1,5 +1,5 @@
 package br.senai.sp.jandira.gestaodereceitas.screens
-
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,11 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -50,9 +45,11 @@ import br.senai.sp.jandira.gestaodereceitas.service.CadastroService
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import androidx.compose.material.icons.
 
 @Composable
 fun TelaHome(navController: NavController?){
@@ -111,10 +108,18 @@ fun TelaHome(navController: NavController?){
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
+//                        Icon(
+//                            imageVector = Icons.Default.Person,
+//                            contentDescription = "",
+//                            tint = Color(0xFFECE1C4))
+
                         Icon(
-                            imageVector = Icons.Default.Person,
+                            imageVector = Icons.Default.AccountCircle,
                             contentDescription = "",
-                            tint = Color(0xFFECE1C4))
+                            tint = Color(0xFF5286BB)
+                        )
+
+
                     } ,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -309,13 +314,13 @@ fun TelaHome(navController: NavController?){
 
                             call.enqueue(object : Callback<Cadastro> {
                                 override fun onResponse(
-                                    p0: retrofit2.Call<Cadastro>, response: Response<Cadastro>
+                                    p0: Call<Cadastro>, response: Response<Cadastro>
                                 ) {
                                     if (response.isSuccessful) {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Usuário cadastrado com sucesso")
                                         }
-                                        android.util.Log.i(
+                                        Log.i(
                                             "API",
                                             "Usuário cadastrado com sucesso: ${response.body()}"
                                         )
@@ -323,17 +328,17 @@ fun TelaHome(navController: NavController?){
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Erro ao cadastrar: ${response.code()}")
                                         }
-                                        android.util.Log.e(
+                                        Log.e(
                                             "API",
                                             "Erro ao cadastrar: ${response.code()}"
                                         )
                                     }
                                 }
                                 override fun onFailure(
-                                    call: retrofit2.Call<Cadastro>,
+                                    call: Call<Cadastro>,
                                     t: Throwable
                                 ) {
-                                    android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                                    Log.e("API", "Falha na requisição: ${t.message}")
                                 }
                             })
                     },

@@ -25,7 +25,7 @@ interface CadastroService {
         fun update(@Body recuperarSenha: RecuperarSenha): Call<RecuperarSenha>
 
         @Headers("Content-Type: application/json")
-        @PUT("receita")
+        @POST("usuario")
         fun publicar(@Body receita: Receita): Call<Receita>
 
 

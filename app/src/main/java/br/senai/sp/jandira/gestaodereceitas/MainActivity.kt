@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.gestaodereceitas.screens.TelaHome
 import br.senai.sp.jandira.gestaodereceitas.screens.TelaLogin
+import br.senai.sp.jandira.gestaodereceitas.screens.TelaReceita
 import br.senai.sp.jandira.gestaodereceitas.screens.TelaRecuperacaoSenha
 import br.senai.sp.jandira.gestaodereceitas.ui.theme.GestaoDeReceitasTheme
 
@@ -39,6 +40,10 @@ class MainActivity : ComponentActivity() {
                     composable("RecuperarSenha") {
                         TelaRecuperacaoSenha(navController)
                     }
+                    composable("receita") {
+                        TelaReceita(navController)
+                    }
+
                 }
 
             }

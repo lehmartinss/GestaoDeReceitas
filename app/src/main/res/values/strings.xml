@@ -31,6 +31,7 @@
     <string name= "publicar_receita_botao">Publicar</string>
     <string name= "foto">Foto</string>
     <string name= "selecionar_foto">Selecionar foto da receita</string>
+    <string name= "selecione">Selecione</string>
 
 
 </resources>
