@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                     composable("login") {
                         TelaLogin(navController)
                     }
-                    composable("home") {
+                    composable("cadastro") {
                         TelaHome(navController)
                     }
                     composable("RecuperarSenha") {

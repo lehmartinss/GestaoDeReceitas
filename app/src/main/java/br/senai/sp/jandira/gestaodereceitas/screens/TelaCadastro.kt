@@ -21,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -38,22 +37,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
-import br.senai.sp.jandira.gestaodereceitas.service.CadastroService
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-import androidx.compose.material.icons.
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
 
 @Composable
 fun TelaHome(navController: NavController?){
 
+    val id = remember { mutableStateOf("") }
     val nome_usuario = remember { mutableStateOf("") }
     val email = remember { mutableStateOf("") }
     val senha = remember { mutableStateOf("") }
@@ -108,18 +109,10 @@ fun TelaHome(navController: NavController?){
                         .height(50.dp),
                     shape = RoundedCornerShape(12.dp),
                     leadingIcon =   {
-//                        Icon(
-//                            imageVector = Icons.Default.Person,
-//                            contentDescription = "",
-//                            tint = Color(0xFFECE1C4))
-
                         Icon(
-                            imageVector = Icons.Default.AccountCircle,
+                            imageVector = Icons.Default.Person,
                             contentDescription = "",
-                            tint = Color(0xFF5286BB)
-                        )
-
-
+                            tint = Color(0xFFECE1C4))
                     } ,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
@@ -301,6 +294,7 @@ fun TelaHome(navController: NavController?){
                     Button(
                         onClick = {
                             val cadastro = Cadastro(
+                                id = id.hashCode(),
                             nome_usuario = nome_usuario.value,
                             email = email.value,
                             senha = senha.value,
@@ -312,9 +306,9 @@ fun TelaHome(navController: NavController?){
                             .getCadastroService()
                             .insert(cadastro)
 
-                            call.enqueue(object : Callback<Cadastro> {
+                            call.enqueue(object : Callback<RespostaCadastro> {
                                 override fun onResponse(
-                                    p0: Call<Cadastro>, response: Response<Cadastro>
+                                    p0: Call<RespostaCadastro>, response: Response<RespostaCadastro>
                                 ) {
                                     if (response.isSuccessful) {
                                         scope.launch {
@@ -335,7 +329,7 @@ fun TelaHome(navController: NavController?){
                                     }
                                 }
                                 override fun onFailure(
-                                    call: Call<Cadastro>,
+                                    call: Call<RespostaCadastro>,
                                     t: Throwable
                                 ) {
                                     Log.e("API", "Falha na requisição: ${t.message}")
@@ -346,7 +340,7 @@ fun TelaHome(navController: NavController?){
                             containerColor = Color(0xFF325862)
                         ),
                         modifier = Modifier
-                            .padding(top = 14.dp, bottom = 1.dp)
+                            .padding(top = 10.dp, bottom = 1.dp)
                     ) {
                         Text(
                             text = stringResource((R.string.criar_conta)),

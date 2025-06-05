@@ -4,6 +4,8 @@ import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
 import br.senai.sp.jandira.gestaodereceitas.model.Login
 import br.senai.sp.jandira.gestaodereceitas.model.Receita
 import br.senai.sp.jandira.gestaodereceitas.model.RecuperarSenha
+import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
+import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Headers
@@ -14,7 +16,7 @@ interface CadastroService {
 
         @Headers("Content-Type: application/json")
         @POST("usuario")
-        fun insert(@Body cadastro: Cadastro): Call<Cadastro>
+        fun insert(@Body cadastro: Cadastro): Call<RespostaCadastro>
 
         @Headers("Content-Type: application/json")
         @POST("login")
@@ -26,7 +28,7 @@ interface CadastroService {
 
         @Headers("Content-Type: application/json")
         @POST("usuario")
-        fun publicar(@Body receita: Receita): Call<Receita>
+        fun publicar(@Body receita: Receita): Call<RespostaReceita>
 
 
 }

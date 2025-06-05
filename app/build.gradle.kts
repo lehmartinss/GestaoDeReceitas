@@ -52,8 +52,8 @@ dependencies {
     implementation(libs.androidx.storage)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.espresso.core)
-    implementation(libs.androidx.material3.lint)
-    implementation(libs.androidx.runtime.lint)
+//    implementation(libs.androidx.material3.lint)
+//    implementation(libs.androidx.runtime.lint)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -66,5 +66,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
     // FOTO
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.5.0")
+    // ICONS
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
 }

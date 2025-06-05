@@ -17,6 +17,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -192,7 +195,7 @@ fun TelaLogin(navController: NavController?){
 
                             android.util.Log.i("API", "Login realizado com sucesso!!: ${response.body()}")
 
-                            navController?.navigate("home")
+                            navController?.navigate("receita")
 
                         } else {
                             scope.launch {
@@ -229,7 +232,7 @@ fun TelaLogin(navController: NavController?){
             fontSize = 17.sp
         )
         TextButton(onClick = {
-            navController?.navigate("home")
+            navController?.navigate("cadastro")
         }) {
             Text(
                 text = stringResource(R.string.fazer_cadastro),
@@ -240,6 +243,7 @@ fun TelaLogin(navController: NavController?){
         SnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
+                .align(Alignment.CenterHorizontally)
                 .padding(16.dp),
             snackbar = { data ->
                 Snackbar(

@@ -11,15 +11,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Icon
-import androidx.compose.material.icons.Icons
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,12 +31,15 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,15 +51,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.Receita
+import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.launch
@@ -75,6 +83,8 @@ fun TelaReceita(navController: NavController?){
     val categoria = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     val categorias = listOf("Salgado", "Doce", "Carne", "Ave", "Peixe", "Sem Glúten", "Sem Lactose",)
+    val id = remember { mutableStateOf("") }
+    val id_usuario= remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -157,10 +167,10 @@ fun TelaReceita(navController: NavController?){
                         contentDescription = null,
                         modifier = Modifier
                             .padding(top = 8.dp)
-                            .height(95.dp) // altura reduzida
-                            .width(180.dp) // largura reduzida (ajuste como quiser)
-                            .clip(RoundedCornerShape(25.dp)),// cantos arredondados
-                        contentScale = ContentScale.Fit // mostra a imagem inteira sem cortar
+                            .height(95.dp)
+                            .width(180.dp)
+                            .clip(RoundedCornerShape(25.dp)),
+                        contentScale = ContentScale.Fit
                     )
                 }
                 Text(
@@ -217,7 +227,8 @@ fun TelaReceita(navController: NavController?){
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
-                        capitalization = KeyboardCapitalization.Sentences
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Done
                     ),
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color(0xFF325862),
@@ -292,15 +303,6 @@ fun TelaReceita(navController: NavController?){
                                 color = Color.White,
                                 fontSize = 14.sp
                             )
-                        },
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.,
-
-                                contentDescription = null,
-                                tint = Color.White
-                            )
-
                         },
                         modifier = Modifier
                             .menuAnchor()
@@ -423,12 +425,15 @@ fun TelaReceita(navController: NavController?){
                     Button(
                         onClick = {
                             val receita = Receita(
+
                                 titulo = titulo.value,
                                 ingrediente = ingrediente.value,
                                 modo_preparo = modo_preparo.value,
                                 dificuldade = dificuldade.value,
                                 tempo_preparo = tempo_preparo.value,
                                 categoria = categoria.value,
+                                id = id.hashCode(),
+                                id_usuario = id_usuario.hashCode()
                             )
 
                             // Fazer uma chamada para API
@@ -436,9 +441,9 @@ fun TelaReceita(navController: NavController?){
                                 .getCadastroService()
                                 .publicar(receita)
 
-                            call.enqueue(object : Callback<Receita> {
+                            call.enqueue(object : Callback<RespostaReceita> {
                                 override fun onResponse(
-                                    p0: Call<Receita>, response: Response<Receita>
+                                    p0: Call<RespostaReceita>, response: Response<RespostaReceita>
                                 ) {
                                     if (response.isSuccessful) {
                                         scope.launch {
@@ -461,7 +466,7 @@ fun TelaReceita(navController: NavController?){
                                         )
                                     }
                                 }
-                                override fun onFailure(p0: Call<Receita>, t: Throwable) {
+                                override fun onFailure(p0: Call<RespostaReceita>, t: Throwable) {
                                     Log.e(
                                         "API",
                                         "Falha na requisição: ${t.message}")
@@ -511,6 +516,8 @@ fun TelaReceita(navController: NavController?){
         )
     }
 }
+
+
 
 
 @Preview(showSystemUi = true)
