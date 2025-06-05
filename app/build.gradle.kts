@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -52,8 +53,6 @@ dependencies {
     implementation(libs.androidx.storage)
     implementation(libs.androidx.media3.common.ktx)
     implementation(libs.androidx.espresso.core)
-//    implementation(libs.androidx.material3.lint)
-//    implementation(libs.androidx.runtime.lint)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -62,11 +61,14 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.navigation:navigation-compose:2.9.0")
-    //RETROFIT
+    // RETROFIT
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    // FOTO
+    // FOTO - Coil Compose
     implementation("io.coil-kt:coil-compose:2.5.0")
     // ICONS
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
+    // FIREBASE
+    implementation("com.google.firebase:firebase-storage-ktx:20.1.0")
+    implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
 }

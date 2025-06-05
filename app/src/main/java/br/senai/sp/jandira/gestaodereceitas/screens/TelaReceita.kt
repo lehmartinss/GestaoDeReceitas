@@ -425,16 +425,18 @@ fun TelaReceita(navController: NavController?){
                     Button(
                         onClick = {
                             val receita = Receita(
-
                                 titulo = titulo.value,
+                                tempo_preparo = tempo_preparo.value,
                                 ingrediente = ingrediente.value,
                                 modo_preparo = modo_preparo.value,
                                 dificuldade = dificuldade.value,
-                                tempo_preparo = tempo_preparo.value,
+
                                 categoria = categoria.value,
                                 id = id.hashCode(),
-                                id_usuario = id_usuario.hashCode()
+                                id_usuario = id_usuario.hashCode(),
+                                foto_receita = urlImagem.toString()  // URL da imagem
                             )
+
 
                             // Fazer uma chamada para API
                             val call = RetrofitFactory()

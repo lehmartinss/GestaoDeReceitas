@@ -52,7 +52,7 @@ import androidx.compose.material.icons.filled.Person
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
 
 @Composable
-fun TelaHome(navController: NavController?){
+fun TelaCadastro(navController: NavController?){
 
     val id = remember { mutableStateOf("") }
     val nome_usuario = remember { mutableStateOf("") }
@@ -397,6 +397,6 @@ fun TelaHome(navController: NavController?){
 
 @Preview(showSystemUi = true)
 @Composable
-private fun TelaHomePreview() {
-    TelaHome(null)
+private fun TelaCadastroPreview() {
+    TelaCadastro(null)
 }

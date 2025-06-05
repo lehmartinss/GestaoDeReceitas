@@ -32,6 +32,10 @@
     <string name= "foto">Foto</string>
     <string name= "selecionar_foto">Selecionar foto da receita</string>
     <string name= "selecione">Selecione</string>
+    <string name= "pesquisar">Pesquisar receita</string>
+    <string name= "categoria1">Salgado</string>
+    <string name= "categoria2">Doce</string>
+    <string name= "categoria3">Carne</string>
 
 
 </resources>

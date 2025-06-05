@@ -64,17 +64,22 @@ fun TelaLogin(navController: NavController?){
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF6F0D6)) // Cor de fundo da tela
-            .padding(32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        Spacer(modifier = Modifier.height(80.dp))
-        Image(
+    Scaffold { innerPadding ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFF6F0D6))
+                .padding(innerPadding)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
+            ) {
+                Spacer(modifier = Modifier.height(50.dp))
+                Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.logo_description),
             modifier = Modifier
@@ -87,7 +92,7 @@ fun TelaLogin(navController: NavController?){
             fontSize = 18.sp,
             modifier = Modifier
                 .align(Alignment.Start)
-                .padding(top = 15.dp)
+                .padding(top = 10.dp)
         )
         OutlinedTextField(
             value = email.value ,
@@ -157,114 +162,107 @@ fun TelaLogin(navController: NavController?){
                 cursorColor = Color.White
             )
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.End
-        ) {
-            TextButton(
-                onClick = {
-                    navController?.navigate("RecuperarSenha")
-                },
-                modifier = Modifier.padding(15.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.esqueceu_senha),
-                    color = Color(0xFF982829),
-                    fontSize = 15.sp
-                )
-            }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    TextButton(
+                        onClick = {
+                            navController?.navigate("RecuperarSenha")
+                        },
+                        modifier = Modifier.padding(3.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.esqueceu_senha),
+                            color = Color(0xFF982829),
+                            fontSize = 15.sp
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(5.dp))
+                Button(
+                    onClick = {
+                        val login = Login(
+                            email = email.value,
+                            senha = senha.value
+                        )
 
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
+                        val call = RetrofitFactory()
+                            .getCadastroService()
+                            .inserir(login)
 
-                val login = Login(
-                    email = email.value,
-                    senha = senha.value
-                )
-
-                val call = RetrofitFactory()
-                    .getCadastroService()
-                    .inserir(login)
-
-                call.enqueue(object : Callback<Login> {
-                    override fun onResponse(call: Call<Login>, response: Response<Login>) {
-                        if (response.isSuccessful) {
-
-                            android.util.Log.i("API", "Login realizado com sucesso!!: ${response.body()}")
-
-                            navController?.navigate("receita")
-
-                        } else {
-                            scope.launch {
-                                snackbarHostState.showSnackbar("Erro ao acessar login: ${response.code()}")
+                        call.enqueue(object : Callback<Login> {
+                            override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                                if (response.isSuccessful) {
+                                    android.util.Log.i("API", "Login realizado com sucesso!!: ${response.body()}")
+                                    navController?.navigate("receita")
+                                } else {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Erro ao acessar login: Campos incorretos ou não preenchidos")
+                                    }
+                                    android.util.Log.e("API", "Erro ao acessar login: ${response.code()}")
+                                }
                             }
-                            android.util.Log.e("API", "Erro ao acessar login: ${response.code()}")
-                        }
-                    }
-                    override fun onFailure(call: Call<Login>, t: Throwable) {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("Erro de conexão: ${t.message}")
-                        }
-                        android.util.Log.e("API", "Falha na requisição: ${t.message}")
-                    }
-                })
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF325862)
-            ),
-            modifier = Modifier
-                .width(130.dp)
 
-        ) {
-            Text(
-                text = stringResource((R.string.entrar)),
-                color = Color.White
-            )
-        }
-        Text(
-            modifier = Modifier
-                .padding(8.dp),
-            text = stringResource((R.string.nao_conta)),
-            color = Color(0xFF982829),
-            fontSize = 17.sp
-        )
-        TextButton(onClick = {
-            navController?.navigate("cadastro")
-        }) {
-            Text(
-                text = stringResource(R.string.fazer_cadastro),
-                color = Color(0xFF982829),
-                fontSize = 14.sp
-            )
-        }
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(16.dp),
-            snackbar = { data ->
-                Snackbar(
-                    containerColor = Color(0xFFFFC56C),
-                    contentColor = Color.Black,
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth()
-                        .height(70.dp)
+                            override fun onFailure(call: Call<Login>, t: Throwable) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Erro de conexão")
+                                }
+                                android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                            }
+                        })
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFF325862)
+                    ),
+                    modifier = Modifier.width(130.dp)
                 ) {
                     Text(
-                        text = data.visuals.message,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 18.sp
+                        text = stringResource(R.string.entrar),
+                        color = Color.White
+                    )
+                }
+                Text(
+                    modifier = Modifier.padding(1.dp),
+                    text = stringResource(R.string.nao_conta),
+                    color = Color(0xFF982829),
+                    fontSize = 17.sp
+                )
+                TextButton(onClick = {
+                    navController?.navigate("cadastro")
+                }) {
+                    Text(
+                        text = stringResource(R.string.fazer_cadastro),
+                        color = Color(0xFF982829),
+                        fontSize = 14.sp
                     )
                 }
             }
-        )
 
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(horizontal = 20.dp),
+                snackbar = { data ->
+                    Snackbar(
+                        containerColor = Color(0xFFFFC56C),
+                        contentColor = Color.Black,
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(70.dp)
+                    ) {
+                        Text(
+                            text = data.visuals.message,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Center,
+                            fontSize = 18.sp
+                        )
+                    }
+                }
+            )
+        }
     }
 }
 
