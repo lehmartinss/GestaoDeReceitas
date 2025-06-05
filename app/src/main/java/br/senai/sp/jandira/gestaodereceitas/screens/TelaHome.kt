@@ -143,7 +143,7 @@ fun TelaHome(navController: NavController?){
 
         }
     }
-}
+
 
 @Preview(showSystemUi = true)
 @Composable

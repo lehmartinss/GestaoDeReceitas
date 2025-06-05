@@ -68,7 +68,9 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.5.0")
     // ICONS
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
-    // FIREBASE
-    implementation("com.google.firebase:firebase-storage-ktx:20.1.0")
-    implementation("com.google.firebase:firebase-auth-ktx:21.1.0")
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+
+    // Produto que você quer usar (ex: Analytics, Storage etc.)
+    implementation("com.google.firebase:firebase-storage")
 }

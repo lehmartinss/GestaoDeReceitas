@@ -65,10 +65,12 @@ import br.senai.sp.jandira.gestaodereceitas.model.Receita
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
 import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,6 +83,7 @@ fun TelaReceita(navController: NavController?){
     val dificuldade = remember { mutableStateOf("") }
     val tempo_preparo = remember { mutableStateOf("") }
     val categoria = remember { mutableStateOf("") }
+    val foto_receita = remember { mutableStateOf("") }
     val expanded = remember { mutableStateOf(false) }
     val categorias = listOf("Salgado", "Doce", "Carne", "Ave", "Peixe", "Sem Glúten", "Sem Lactose",)
     val id = remember { mutableStateOf("") }
@@ -276,76 +279,76 @@ fun TelaReceita(navController: NavController?){
                         cursorColor = Color.White
                     )
                 )
-                Text(
-                    text = stringResource(R.string.Categoria),
-                    fontSize = 18.sp,
-                    modifier = Modifier
-                        .align(Alignment.Start)
-                        .padding(top = 16.dp)
-                )
-
-                ExposedDropdownMenuBox(
-                    expanded = expanded.value,
-                    onExpandedChange = { expanded.value = !expanded.value },
-                    modifier = Modifier
-                        .width(200.dp)
-                        .padding(top = 5.dp)
-                ) {
-                    OutlinedTextField(
-                        value = categoria.value,
-                        onValueChange = { it ->
-                            categoria.value = it
-                        },
-                        readOnly = true,
-                        placeholder = {
-                            Text(
-                                text = stringResource(R.string.selecione),
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .height(55.dp)
-                            .width(180.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        textStyle = LocalTextStyle.current.copy(
-                            fontSize = 14.sp
-                        ),
-                        colors = TextFieldDefaults.colors(
-                            focusedContainerColor = Color(0xFF325862),
-                            unfocusedContainerColor = Color(0xFF325862),
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent,
-                            cursorColor = Color.White
-                        )
-                    )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded.value,
-                        onDismissRequest = { expanded.value = false },
-                        modifier = Modifier
-                            .background(Color(0xFF982829))
-                    ) {
-                        categorias.forEach { item ->
-                            DropdownMenuItem(
-                                text = {
-                                    Text(
-                                        text = item,
-                                        color = Color.White
-                                    )
-                                },
-                                onClick = {
-                                    categoria.value = item
-                                    expanded.value = false
-                                },
-                                modifier = Modifier.background(Color(0xFF982829))
-                            )
-                        }
-                    }
-                }
+//                Text(
+//                    text = stringResource(R.string.Categoria),
+//                    fontSize = 18.sp,
+//                    modifier = Modifier
+//                        .align(Alignment.Start)
+//                        .padding(top = 16.dp)
+//                )
+//
+//                ExposedDropdownMenuBox(
+//                    expanded = expanded.value,
+//                    onExpandedChange = { expanded.value = !expanded.value },
+//                    modifier = Modifier
+//                        .width(200.dp)
+//                        .padding(top = 5.dp)
+//                ) {
+//                    OutlinedTextField(
+//                        value = categoria.value,
+//                        onValueChange = { it ->
+//                            categoria.value = it
+//                        },
+//                        readOnly = true,
+//                        placeholder = {
+//                            Text(
+//                                text = stringResource(R.string.selecione),
+//                                color = Color.White,
+//                                fontSize = 14.sp
+//                            )
+//                        },
+//                        modifier = Modifier
+//                            .menuAnchor()
+//                            .height(55.dp)
+//                            .width(180.dp),
+//                        shape = RoundedCornerShape(12.dp),
+//                        textStyle = LocalTextStyle.current.copy(
+//                            fontSize = 14.sp
+//                        ),
+//                        colors = TextFieldDefaults.colors(
+//                            focusedContainerColor = Color(0xFF325862),
+//                            unfocusedContainerColor = Color(0xFF325862),
+//                            focusedTextColor = Color.White,
+//                            unfocusedTextColor = Color.White,
+//                            focusedIndicatorColor = Color.Transparent,
+//                            unfocusedIndicatorColor = Color.Transparent,
+//                            cursorColor = Color.White
+//                        )
+//                    )
+//
+//                    ExposedDropdownMenu(
+//                        expanded = expanded.value,
+//                        onDismissRequest = { expanded.value = false },
+//                        modifier = Modifier
+//                            .background(Color(0xFF982829))
+//                    ) {
+//                        categorias.forEach { item ->
+//                            DropdownMenuItem(
+//                                text = {
+//                                    Text(
+//                                        text = item,
+//                                        color = Color.White
+//                                    )
+//                                },
+//                                onClick = {
+//                                    categoria.value = item
+//                                    expanded.value = false
+//                                },
+//                                modifier = Modifier.background(Color(0xFF982829))
+//                            )
+//                        }
+//                    }
+//                }
                 Text(
                     text = stringResource(R.string.nivel_dificuldade),
                     fontSize = 18.sp,
@@ -424,58 +427,68 @@ fun TelaReceita(navController: NavController?){
                 ){
                     Button(
                         onClick = {
-                            val receita = Receita(
-                                titulo = titulo.value,
-                                tempo_preparo = tempo_preparo.value,
-                                ingrediente = ingrediente.value,
-                                modo_preparo = modo_preparo.value,
-                                dificuldade = dificuldade.value,
+                            Log.i("daniel", "TelaReceita: cheguei BRasil")
+                            val storage = FirebaseStorage.getInstance()
+                            val storageRef = storage.reference
+                            val imageRef = storageRef.child("receitas/${UUID.randomUUID()}.jpg")
 
-                                categoria = categoria.value,
-                                id = id.hashCode(),
-                                id_usuario = id_usuario.hashCode(),
-                                foto_receita = urlImagem.toString()  // URL da imagem
-                            )
+                            imageUri.value?.let { uri ->
+                                val uploadTask = imageRef.putFile(uri)
+                                Log.i("daniel", "TelaReceita: ${uri.path}")
+                                uploadTask.addOnSuccessListener {
+                                    imageRef.downloadUrl.addOnSuccessListener { downloadUrl ->
 
-
-                            // Fazer uma chamada para API
-                            val call = RetrofitFactory()
-                                .getCadastroService()
-                                .publicar(receita)
-
-                            call.enqueue(object : Callback<RespostaReceita> {
-                                override fun onResponse(
-                                    p0: Call<RespostaReceita>, response: Response<RespostaReceita>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar("Receita publicada com sucesso")
-                                        }
-                                        Log.i(
-                                            "API",
-                                            "Receita publicada com sucesso: ${response.body()}"
+                                        val receita = Receita(
+                                            id = id.hashCode(),
+                                            titulo = titulo.value,
+                                            tempo_preparo = tempo_preparo.value,
+                                            foto_receita = downloadUrl.toString(),  // URL da imagem no Firebase
+                                            ingrediente = ingrediente.value,
+                                            modo_preparo = modo_preparo.value,
+                                            dificuldade = dificuldade.value,
+                                            id_usuario = id_usuario.hashCode()
+//                                            categoria = categoria.
                                         )
 
-//                                                navController?.navigate("login")
+                                        val call = RetrofitFactory()
+                                            .getCadastroService()
+                                            .publicar(receita)
 
-                                    } else {
-                                        scope.launch {
-                                            snackbarHostState.showSnackbar("Erro ao publicar receita: existe campos que não foram preenchidos")
-                                        }
-                                        Log.e(
-                                            "API",
-                                            "Erro ao publicar receita: ${response.code()}"
-                                        )
+                                        call.enqueue(object : Callback<RespostaReceita> {
+                                            override fun onResponse(
+                                                p0: Call<RespostaReceita>, response: Response<RespostaReceita>
+                                            ) {
+                                                if (response.isSuccessful) {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar("Receita publicada com sucesso")
+                                                    }
+                                                    Log.i("API", "Receita publicada com sucesso: ${response.body()}")
+                                                } else {
+                                                    scope.launch {
+                                                        snackbarHostState.showSnackbar("Erro ao publicar receita: campos incompletos")
+                                                    }
+                                                    Log.e("API", "Erro ao publicar receita: ${response.code()}")
+                                                }
+                                            }
+
+                                            override fun onFailure(p0: Call<RespostaReceita>, t: Throwable) {
+                                                Log.e("API", "Falha na requisição: ${t.message}")
+                                            }
+                                        })
+                                    }
+                                }.addOnFailureListener {
+                                    Log.e("Firebase", "Erro ao fazer upload da imagem")
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Erro ao enviar imagem")
                                     }
                                 }
-                                override fun onFailure(p0: Call<RespostaReceita>, t: Throwable) {
-                                    Log.e(
-                                        "API",
-                                        "Falha na requisição: ${t.message}")
+                            } ?: run {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar("Selecione uma imagem antes de publicar")
                                 }
-                            })
-
-                        },
+                            }
+                        }
+                        ,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF982829)
                         ),
