@@ -10,6 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -44,11 +49,11 @@ import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Create
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Create
+//import androidx.compose.material.icons.filled.Email
+//import androidx.compose.material.icons.filled.Lock
+//import androidx.compose.material.icons.filled.Person
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
 
 @Composable
@@ -394,6 +399,8 @@ fun TelaCadastro(navController: NavController?){
         )
     }
 }
+
+
 
 @Preview(showSystemUi = true)
 @Composable

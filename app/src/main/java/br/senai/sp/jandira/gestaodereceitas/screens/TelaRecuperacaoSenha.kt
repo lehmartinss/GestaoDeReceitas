@@ -11,11 +11,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Call
+//import androidx.compose.material.icons.filled.Email
+//import androidx.compose.material.icons.filled.Lock
+//import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -59,6 +59,7 @@ import retrofit2.Response
     val senha = remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -104,13 +105,13 @@ import retrofit2.Response
                             .fillMaxWidth()
                             .padding(top = 5.dp),
                         shape = RoundedCornerShape(12.dp),
-                        leadingIcon =   {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "",
-                                tint = Color(0xFFECE1C4)
-                            )
-                        } ,
+//                        leadingIcon =   {
+//                            Icon(
+//                                imageVector = Icons.Default.Person,
+//                                contentDescription = "",
+//                                tint = Color(0xFFECE1C4)
+//                            )
+//                        } ,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Email
                         ),
@@ -142,13 +143,13 @@ import retrofit2.Response
                             .fillMaxWidth()
                             .padding(top = 5.dp),
                         shape = RoundedCornerShape(12.dp),
-                        leadingIcon =   {
-                            Icon(
-                                imageVector = Icons.Default.Email,
-                                contentDescription = "",
-                                tint = Color(0xFFECE1C4)
-                            )
-                        } ,
+//                        leadingIcon =   {
+//                            Icon(
+//                                imageVector = Icons.Default.Email,
+//                                contentDescription = "",
+//                                tint = Color(0xFFECE1C4)
+//                            )
+//                        } ,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             capitalization = KeyboardCapitalization.Sentences
@@ -181,13 +182,13 @@ import retrofit2.Response
                             .fillMaxWidth()
                             .padding(top = 5.dp),
                         shape = RoundedCornerShape(12.dp),
-                        leadingIcon =   {
-                            Icon(
-                                imageVector = Icons.Default.Lock,
-                                contentDescription = "",
-                                tint = Color(0xFFECE1C4)
-                            )
-                        } ,
+//                        leadingIcon =   {
+//                            Icon(
+//                                imageVector = Icons.Default.Lock,
+//                                contentDescription = "",
+//                                tint = Color(0xFFECE1C4)
+//                            )
+//                        } ,
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             capitalization = KeyboardCapitalization.Sentences

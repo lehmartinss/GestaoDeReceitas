@@ -1,20 +1,14 @@
 package br.senai.sp.jandira.gestaodereceitas.model
 
-data class Receita(
+data class Home(
     val id: Int? = null,
+    val id_usuario: Int = 0,
     val titulo: String = "",
     val tempo_preparo: String = "",
     val foto_receita: String = "",
     val ingrediente: String = "",
     val modo_preparo: String = "",
     val dificuldade: String = "",
-    val id_usuario: Int,
     val classificacao_ids: List<Int> = emptyList(),
-    val classificacao: String? = null  // agora pode ser null
-)
-
-
-data class ClassificacaoReceita(
-    val id_classificacao: Int,
-    val nome: String
+    val classificacao: String? = null
 )

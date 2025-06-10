@@ -5,7 +5,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitFactory {
 
-    private val BASE_URL = "http://10.107.134.14:8080/v1/controle-receita/"
+    private val BASE_URL = "http://10.107.144.22:8080/v1/controle-receita/"
 
     private val retrofit = Retrofit
         .Builder()
@@ -16,4 +16,5 @@ class RetrofitFactory {
     fun getCadastroService(): CadastroService {
         return retrofit.create(CadastroService::class.java)
     }
+
 }

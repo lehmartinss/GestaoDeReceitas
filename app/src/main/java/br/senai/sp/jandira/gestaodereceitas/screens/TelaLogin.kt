@@ -1,3 +1,4 @@
+// Em br.senai.sp.jandira.gestaodereceitas.screens.TelaLogin
 package br.senai.sp.jandira.gestaodereceitas.screens
 
 import android.graphics.drawable.Icon
@@ -17,9 +18,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
+//import androidx.compose.material.icons.Icons
+//import androidx.compose.material.icons.filled.Lock
+//import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -38,6 +39,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -49,7 +51,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.Login
+import br.senai.sp.jandira.gestaodereceitas.model.LoginApiResponse // <-- ADICIONE ESTA IMPORTAÇÃO
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import br.senai.sp.jandira.gestaodereceitas.utils.SharedPreferencesUtils
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -63,6 +67,7 @@ fun TelaLogin(navController: NavController?){
     val senha = remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold { innerPadding ->
         Box(
@@ -80,88 +85,76 @@ fun TelaLogin(navController: NavController?){
             ) {
                 Spacer(modifier = Modifier.height(50.dp))
                 Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = stringResource(R.string.logo_description),
-            modifier = Modifier
-                .size(250.dp)
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = stringResource(R.string.logo_description),
+                    modifier = Modifier
+                        .size(250.dp)
 
-        )
-        Spacer(modifier = Modifier.height(40.dp))
-        Text(
-            text = stringResource(R.string.digite_email),
-            fontSize = 18.sp,
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 10.dp)
-        )
-        OutlinedTextField(
-            value = email.value ,
-            onValueChange = { it ->
-                email.value = it
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            shape = RoundedCornerShape(12.dp),
-            leadingIcon =   {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "",
-                    tint = Color(0xFFECE1C4))
-            } ,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Email
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF325862),
-                unfocusedContainerColor = Color(0xFF325862),
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLeadingIconColor = Color.White,
-                unfocusedLeadingIconColor = Color.White,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.White
-            ),
-        )
-        Text(
-            text = stringResource(R.string.senha),
-            fontSize = 18.sp,
-            modifier = Modifier
-                .align(Alignment.Start)
-                .padding(top = 10.dp)
-        )
-        OutlinedTextField(
-            value = senha.value ,
-            onValueChange = { it ->
-                senha.value = it
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp),
-            shape = RoundedCornerShape(12.dp),
-            leadingIcon =   {
-                Icon(
-                    imageVector = Icons.Default.Lock,
-                    contentDescription = "",
-                    tint = Color(0xFFECE1C4))
-            } ,
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                capitalization = KeyboardCapitalization.Sentences
-            ),
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color(0xFF325862),
-                unfocusedContainerColor = Color(0xFF325862),
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                focusedLeadingIconColor = Color.White,
-                unfocusedLeadingIconColor = Color.White,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.White
-            )
-        )
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                Text(
+                    text = stringResource(R.string.digite_email),
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(top = 10.dp)
+                )
+                OutlinedTextField(
+                    value = email.value ,
+                    onValueChange = { it ->
+                        email.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Email
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFF325862),
+                        unfocusedContainerColor = Color(0xFF325862),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedLeadingIconColor = Color.White,
+                        unfocusedLeadingIconColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.White
+                    ),
+                )
+                Text(
+                    text = stringResource(R.string.senha),
+                    fontSize = 18.sp,
+                    modifier = Modifier
+                        .align(Alignment.Start)
+                        .padding(top = 10.dp)
+                )
+                OutlinedTextField(
+                    value = senha.value ,
+                    onValueChange = { it ->
+                        senha.value = it
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        capitalization = KeyboardCapitalization.Sentences
+                    ),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color(0xFF325862),
+                        unfocusedContainerColor = Color(0xFF325862),
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedLeadingIconColor = Color.White,
+                        unfocusedLeadingIconColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        cursorColor = Color.White
+                    )
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
@@ -191,24 +184,39 @@ fun TelaLogin(navController: NavController?){
                             .getCadastroService()
                             .inserir(login)
 
-                        call.enqueue(object : Callback<Login> {
-                            override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                        call.enqueue(object : Callback<LoginApiResponse> {
+                            override fun onResponse(call: Call<LoginApiResponse>, response: Response<LoginApiResponse>) {
                                 if (response.isSuccessful) {
-                                    android.util.Log.i("API", "Login realizado com sucesso!!: ${response.body()}")
-                                    navController?.navigate("receita")
+                                    val apiResponse = response.body()
+                                    android.util.Log.i("API_DEBUG", "Corpo da resposta do login (completo): $apiResponse")
+
+                                    if (apiResponse != null && apiResponse.userList.isNotEmpty()) {
+                                        val loggedInUser = apiResponse.userList[0]
+                                        val userId = loggedInUser.id // Acesse o ID do objeto User
+
+                                        SharedPreferencesUtils.saveUserId(context, userId) // salva o id
+                                        android.util.Log.i("API", "Login realizado com sucesso! ID do usuario: $userId")
+                                        navController?.navigate("receita")
+                                    } else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Erro ao acessar login. Email ou senha incorredos")
+                                        }
+                                        android.util.Log.e("API", "Login successful, but user data list is empty or null in response body.")
+                                    }
                                 } else {
                                     scope.launch {
-                                        snackbarHostState.showSnackbar("Erro ao acessar login: Campos incorretos ou não preenchidos")
+                                        val errorBodyString = response.errorBody()?.string()
+                                        android.util.Log.e("API", "Erro ao acessar login: ${response.code()} - Detalhes: $errorBodyString")
+                                        snackbarHostState.showSnackbar("Erro ao acessar login:Email ou senha incorredos." )
                                     }
-                                    android.util.Log.e("API", "Erro ao acessar login: ${response.code()}")
                                 }
                             }
 
-                            override fun onFailure(call: Call<Login>, t: Throwable) {
+                            override fun onFailure(call: Call<LoginApiResponse>, t: Throwable) {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Erro de conexão")
+                                    snackbarHostState.showSnackbar("Erro de conexão: Verifique sua internet.")
                                 }
-                                android.util.Log.e("API", "Falha na requisição: ${t.message}")
+                                android.util.Log.e("API", "Falha na requisição: ${t.message}", t)
                             }
                         })
                     },
