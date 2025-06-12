@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.gestaodereceitas.screens
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,11 +23,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import br.senai.sp.jandira.gestaodereceitas.R
 import br.senai.sp.jandira.gestaodereceitas.model.ClassificacaoReceita
 import br.senai.sp.jandira.gestaodereceitas.model.Receita
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaHome
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
+import br.senai.sp.jandira.gestaodereceitas.utils.SharedPreferencesUtils
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -37,25 +38,23 @@ import retrofit2.Response
 @Composable
 fun TelaHome(navController: NavController?) {
     val context = LocalContext.current
-    val sharedPreferences =
-        context.getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-    // 1) RECUPERA COMO STRING (default vazio)
-    val userId = sharedPreferences.getString("userId", "") ?: ""
+
+    // Pega o userId como Int (modificação: confirma que userId é Int)
+    val userId = SharedPreferencesUtils.getUserId(context)
 
     val coroutineScope = rememberCoroutineScope()
     val receitasState = remember { mutableStateOf<List<Receita>>(emptyList()) }
 
-    // 2) SÓ BUSCA SE NÃO FOR string VAZIA
-    LaunchedEffect(userId) {
-        if (userId.isNotBlank()) {
+    val currentBackStackEntry = navController?.currentBackStackEntryAsState()
+    val savedStateHandle = currentBackStackEntry?.value?.savedStateHandle
+
+    fun carregarReceitas() {
+        if (userId != null && userId > 0) {  // Verifica se userId é válido
             RetrofitFactory()
                 .getCadastroService()
-                .listarReceitasDoUsuario(userId)
+                .listarReceitasDoUsuario(userId)  // Passa o Int diretamente (corrigido)
                 .enqueue(object : Callback<RespostaHome> {
-                    override fun onResponse(
-                        call: Call<RespostaHome>,
-                        response: Response<RespostaHome>
-                    ) {
+                    override fun onResponse(call: Call<RespostaHome>, response: Response<RespostaHome>) {
                         if (response.isSuccessful) {
                             val receitas = response.body()?.receitasPublicadas.orEmpty()
                             receitasState.value = receitas
@@ -70,7 +69,20 @@ fun TelaHome(navController: NavController?) {
                     }
                 })
         } else {
-            Log.w("API", "ID do usuário está em branco, não foi possível buscar receitas.")
+            Log.w("API", "ID do usuário está nulo ou inválido, não foi possível buscar receitas.")
+        }
+    }
+
+    LaunchedEffect(userId) {
+        carregarReceitas()
+    }
+
+    LaunchedEffect(savedStateHandle) {
+        savedStateHandle?.getLiveData<Boolean>("reload_receitas")?.observeForever { shouldReload ->
+            if (shouldReload == true) {
+                carregarReceitas()
+                savedStateHandle["reload_receitas"] = false
+            }
         }
     }
 
@@ -92,7 +104,6 @@ fun TelaHome(navController: NavController?) {
             .background(Color(0xFFF6F0D6))
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Logo e barra de busca
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
@@ -121,7 +132,6 @@ fun TelaHome(navController: NavController?) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Categorias com setas
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -169,7 +179,6 @@ fun TelaHome(navController: NavController?) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Exibir receitas cadastradas
             receitasState.value.forEach { receita ->
                 Box(
                     modifier = Modifier
@@ -182,7 +191,7 @@ fun TelaHome(navController: NavController?) {
                         Text(text = receita.titulo, fontSize = 18.sp, color = Color(0xFF982829))
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "Classificação: ${receita.classificacao ?: "N/A"}",
+                            text = "Classificação: ${receita.classificacoes ?: "N/A"}",
                             fontSize = 14.sp
                         )
                         Text(text = "Ingredientes: ${receita.ingrediente}", fontSize = 14.sp)

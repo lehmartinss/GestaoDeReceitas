@@ -1,6 +1,5 @@
 package br.senai.sp.jandira.gestaodereceitas.screens
 
-import android.graphics.drawable.Icon
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -10,28 +9,22 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.Icon
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -39,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -57,7 +49,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import br.senai.sp.jandira.gestaodereceitas.R
@@ -67,12 +58,10 @@ import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
 import br.senai.sp.jandira.gestaodereceitas.service.RetrofitFactory
 import br.senai.sp.jandira.gestaodereceitas.utils.SharedPreferencesUtils
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.UUID
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -438,116 +427,65 @@ fun TelaReceita(navController: NavController?){
                     contentAlignment = Alignment.BottomEnd
                 ){
                     Button(
-                        onClick = {
-                            Log.i("Receita", "TelaReceita: Iniciando publicação de receita.")
-
-                            // Obter o ID do usuário das SharedPreferences ---
+                        onClick = buttonClick@{
                             val loggedInUserId = SharedPreferencesUtils.getUserId(context)
-                            Log.d("RECEITA_VALIDATION", "ID do usu\u00e1rio lido das SharedPreferences: $loggedInUserId")
-
-                            // Validação Frontend (com o ID do usuário e ID da categoria)
-                            if (titulo.value.isBlank() ||
-                                ingrediente.value.isBlank() ||
-                                modo_preparo.value.isBlank() ||
-                                dificuldade.value.isBlank() ||
-                                tempo_preparo.value.isBlank() ||
-                                categoriaNomeSelecionada.value.isBlank() || // Valida se o nome da categoria foi selecionado
-                                categoriaIdSelecionada.intValue == 0 ||
-                                imageUri.value == null ||
-                                loggedInUserId <= 0
-                            ) {
+                            if (loggedInUserId <= 0) {
                                 scope.launch {
-                                    snackbarHostState.showSnackbar("Por favor, preencha todos os campos, selecione uma imagem e certifique-se de estar logado.")
+                                    snackbarHostState.showSnackbar("Usuário não logado.")
                                 }
-                                return@Button
+                                return@buttonClick
                             }
 
-                            // Vhama a funcao uploadImageToFirebase
-                            imageUri.value?.let { uri ->
-                                uploadImageToFirebase(
-                                    uri = uri,
-                                    onSuccess = { downloadUrl ->
-                                        // mennsagem se o upload é bem-sucedido
-                                        Log.i("Receita", "TelaReceita: Download URL da imagem obtida: $downloadUrl")
+                            val receita = Receita(
+                                id = null,
+                                titulo = titulo.value,
+                                tempo_preparo = tempo_preparo.value,
+                                foto_receita = imageUri.value?.toString() ?: "",
+                                ingrediente = ingrediente.value,
+                                modo_preparo = modo_preparo.value,
+                                dificuldade = dificuldade.value,
+                                id_usuario = loggedInUserId, // o mais importante aqui!
+                                classificacao_ids = listOf(categoriaIdSelecionada.intValue),
+                                classificacao = categoriaNomeSelecionada.value,
+                                usuario = null,
+                                classificacoes = null
+                            )
 
-                                        foto_receita.value = downloadUrl // Atualiza o MutableState foto_receita
 
-                                        val receita = Receita(
-                                            id = null,
-                                            titulo = titulo.value,
-                                            tempo_preparo = tempo_preparo.value,
-                                            foto_receita = foto_receita.value,
-                                            ingrediente = ingrediente.value,
-                                            modo_preparo = modo_preparo.value,
-                                            dificuldade = dificuldade.value,
-                                            id_usuario = loggedInUserId,
-                                            classificacao_ids = listOf(categoriaIdSelecionada.value),
-                                            classificacao = ""
-                                        )
-
-                                        Log.d("API_REQUEST", "Objeto Receita sendo enviado: $receita")
-
-                                        val call = RetrofitFactory()
-                                            .getCadastroService()
-                                            .publicar(receita)
-
-                                        call.enqueue(object : Callback<RespostaReceita> {
-                                            override fun onResponse(
-                                                p0: Call<RespostaReceita>, response: Response<RespostaReceita>
-                                            ) {
-                                                if (response.isSuccessful) {
-                                                    scope.launch {
-                                                        snackbarHostState.showSnackbar("Receita publicada com sucesso!")
-                                                    }
-                                                    Log.i("API", "Receita publicada com sucesso. Resposta: ${response.body()}")
-
-                                                    navController?.navigate("cadastro")
-                                                } else {
-                                                    val errorBodyString = response.errorBody()?.string()
-                                                    val errorMessage = "Erro ao publicar receita: Código"
-                                                    scope.launch {
-                                                        snackbarHostState.showSnackbar(errorMessage)
-                                                    }
-                                                    Log.e("API", "Erro ao publicar receita: ${response.code()} - Corpo do erro: $errorBodyString")
-                                                }
-                                            }
-
-                                            override fun onFailure(p0: Call<RespostaReceita>, t: Throwable) {
-                                                Log.e("API", "Falha na requisição (erro de conexão ou rede): ${t.message}", t)
-                                                scope.launch {
-                                                    snackbarHostState.showSnackbar("Falha na conexão: Verifique sua internet.")
-                                                }
-                                            }
-                                        })
-                                    },
-                                    onError = { exception ->
-                                        // se houver um erro no upload da img
-                                        Log.e("Firebase", "Erro ao fazer upload da imagem via util: ${exception.message}", exception)
+                            RetrofitFactory().getCadastroService().publicar(receita).enqueue(object : Callback<RespostaReceita> {
+                                override fun onResponse(call: Call<RespostaReceita>, response: Response<RespostaReceita>) {
+                                    if (response.isSuccessful) {
                                         scope.launch {
-                                            snackbarHostState.showSnackbar("Erro ao enviar imagem")
+                                            snackbarHostState.showSnackbar("Receita publicada!")
+                                        }
+                                        navController?.navigate("cadastro") {
+                                            popUpTo("publicar") { inclusive = true }
+                                        }
+                                    } else {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar("Erro ao publicar receita.")
                                         }
                                     }
-                                )
-                            } ?: run {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Selecione uma imagem antes de publicar a receita.")
                                 }
-                            }
+
+                                override fun onFailure(call: Call<RespostaReceita>, t: Throwable) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Erro de conexão.")
+                                    }
+                                }
+                            })
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF982829)
-                        ),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF982829)),
                         modifier = Modifier
                             .padding(top = 20.dp, bottom = 4.dp)
                             .width(130.dp)
                     )
                     {
                         Text(
-                            text = stringResource((R.string.publicar_receita_botao)),
+                            text = stringResource(id = R.string.publicar_receita_botao),
                             color = Color.White
                         )
                     }
-
                 }
             }
         }

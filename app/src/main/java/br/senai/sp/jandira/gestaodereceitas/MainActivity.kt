@@ -43,6 +43,9 @@ class MainActivity : ComponentActivity() {
                     composable("receita") {
                         TelaReceita(navController)
                     }
+                    composable("home") {
+                        TelaHome(navController)
+                    }
 
                 }
 

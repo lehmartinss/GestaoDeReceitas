@@ -1,21 +1,8 @@
-// Em br.senai.sp.jandira.gestaodereceitas.service.CadastroService
 package br.senai.sp.jandira.gestaodereceitas.service
 
-import br.senai.sp.jandira.gestaodereceitas.model.Cadastro
-import br.senai.sp.jandira.gestaodereceitas.model.Login
-import br.senai.sp.jandira.gestaodereceitas.model.Receita
-import br.senai.sp.jandira.gestaodereceitas.model.RecuperarSenha
-import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
-import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
-import br.senai.sp.jandira.gestaodereceitas.model.LoginApiResponse
-import br.senai.sp.jandira.gestaodereceitas.model.RespostaHome
+import br.senai.sp.jandira.gestaodereceitas.model.*
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface CadastroService {
 
@@ -25,7 +12,7 @@ interface CadastroService {
 
         @Headers("Content-Type: application/json")
         @POST("login")
-        fun inserir(@Body login: Login): Call<LoginApiResponse>
+        fun login(@Body login: Login): Call<LoginApiResponse>
 
         @Headers("Content-Type: application/json")
         @PUT("usuario")
@@ -36,7 +23,12 @@ interface CadastroService {
         fun publicar(@Body receita: Receita): Call<RespostaReceita>
 
         @Headers("Content-Type: application/json")
-        @GET("receita/usuario")
-        fun listarReceitasDoUsuario(@Query("idUsuario") idUsuario: String): Call<RespostaHome>
+        @GET("usuario/{id}/receitas")
+        fun listarReceitasDoUsuario(@Path("id") id: Int): Call<RespostaHome>
+
+
+
+
+
 
 }
