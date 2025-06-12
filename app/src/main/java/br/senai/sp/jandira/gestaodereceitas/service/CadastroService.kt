@@ -9,6 +9,7 @@ import br.senai.sp.jandira.gestaodereceitas.model.RespostaCadastro
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaReceita
 import br.senai.sp.jandira.gestaodereceitas.model.LoginApiResponse
 import br.senai.sp.jandira.gestaodereceitas.model.RespostaHome
+import br.senai.sp.jandira.gestaodereceitas.model.RespostaPerfil
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -38,5 +39,9 @@ interface CadastroService {
         @Headers("Content-Type: application/json")
         @GET("receita/usuario")
         fun listarReceitasDoUsuario(@Query("idUsuario") idUsuario: String): Call<RespostaHome>
+
+        @Headers("Content-Type: application/json")
+        @GET("receita/usuario")
+        fun listarReceitasDoUsuarioPerfl(): Call<RespostaPerfil>
 
 }

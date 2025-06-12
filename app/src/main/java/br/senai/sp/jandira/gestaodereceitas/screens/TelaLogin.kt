@@ -196,7 +196,7 @@ fun TelaLogin(navController: NavController?){
 
                                         SharedPreferencesUtils.saveUserId(context, userId) // salva o id
                                         android.util.Log.i("API", "Login realizado com sucesso! ID do usuario: $userId")
-                                        navController?.navigate("receita")
+                                        navController?.navigate("perfil")
                                     } else {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Erro ao acessar login. Email ou senha incorredos")
