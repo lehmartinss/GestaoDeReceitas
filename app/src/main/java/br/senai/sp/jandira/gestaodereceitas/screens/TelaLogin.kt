@@ -181,6 +181,7 @@ fun TelaLogin(navController: NavController?) {
                                     if (apiResponse != null && apiResponse.userList.isNotEmpty()) {
                                         val userId = apiResponse.userList[0].id
 
+<<<<<<< HEAD
                                         if (userId != null && userId > 0) {
                                             SharedPreferencesUtils.saveUserId(context, userId)
                                             val testId = SharedPreferencesUtils.getUserId(context)
@@ -192,6 +193,11 @@ fun TelaLogin(navController: NavController?) {
                                             }
                                             android.util.Log.e("API", "ID do usuário é nulo ou inválido.")
                                         }
+=======
+                                        SharedPreferencesUtils.saveUserId(context, userId) // salva o id
+                                        android.util.Log.i("API", "Login realizado com sucesso! ID do usuario: $userId")
+                                        navController?.navigate("perfil")
+>>>>>>> cc93f028bfecf0e5b44d90b8e1ff1ec1f29b1ee6
                                     } else {
                                         scope.launch {
                                             snackbarHostState.showSnackbar("Erro ao acessar login. Email ou senha incorretos.")

@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
+<<<<<<< HEAD
         <domain includeSubdomains="true">10.107.134.10</domain>
+=======
+        <domain includeSubdomains="true">10.107.134.17</domain>
+>>>>>>> cc93f028bfecf0e5b44d90b8e1ff1ec1f29b1ee6
     </domain-config>
 </network-security-config>
