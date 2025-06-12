@@ -40,4 +40,5 @@
     <string name= "nomeUser">Maria</string>
     <string name= "nomeDeUser">maria@gmail.com</string>
     <string name= "botaoPublicar">Publicar Receita</string>
+    <string name= "minhasReceitas">Minhas Receitas</string>
 </resources>

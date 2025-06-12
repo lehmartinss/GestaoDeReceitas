@@ -173,6 +173,16 @@ fun TelaPerfil(navController: NavController?) {
                         maxLines = 1
                     )
                 }
+
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+            Column {
+                Text(
+                    text = stringResource(R.string.minhasReceitas),
+                    color = Color.Black,
+                    fontSize = 25.sp,
+                    maxLines = 1
+                )
             }
         }
     }
